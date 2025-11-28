@@ -3,12 +3,16 @@ import { getAllOrder, deleteOrder } from "./FetchApi";
 export const fetchData = async (dispatch) => {
   dispatch({ type: "loading", payload: true });
   let responseData = await getAllOrder();
+  console.log("Orders Response:", responseData);
   setTimeout(() => {
     if (responseData && responseData.Orders) {
       dispatch({
         type: "fetchOrderAndChangeState",
         payload: responseData.Orders,
       });
+      dispatch({ type: "loading", payload: false });
+    } else {
+      console.log("No orders data found");
       dispatch({ type: "loading", payload: false });
     }
   }, 1000);
