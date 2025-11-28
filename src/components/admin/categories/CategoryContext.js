@@ -3,9 +3,7 @@ export const categoryState = {
   addCategoryModal: false,
   editCategoryModal: {
     modal: false,
-    cId: null,
-    des: "",
-    status: "",
+    category: null,
   },
   loading: false,
 };
@@ -30,9 +28,7 @@ export const categoryReducer = (state, action) => {
         ...state,
         editCategoryModal: {
           modal: true,
-          cId: action.cId,
-          des: action.des,
-          status: action.status,
+          category: action.category,
         },
       };
     case "editCategoryModalClose":
@@ -40,9 +36,7 @@ export const categoryReducer = (state, action) => {
         ...state,
         editCategoryModal: {
           modal: false,
-          cId: null,
-          des: "",
-          status: "",
+          category: null,
         },
       };
     case "loading":

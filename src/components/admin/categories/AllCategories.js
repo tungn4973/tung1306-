@@ -1,13 +1,62 @@
-import React, { Fragment, useContext, useEffect } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { getAllCategory, deleteCategory } from "./FetchApi";
 import { CategoryContext } from "./index";
 import moment from "moment";
 
 const apiURL = process.env.REACT_APP_API_URL;
 
-const AllCategory = (props) => {
+/* Delete Confirm Dialog */
+const DeleteConfirmDialog = ({ isOpen, onClose, onConfirm, categoryName }) => {
+  if (!isOpen) return null;
+
+  return (
+    <Fragment>
+      <div
+        onClick={onClose}
+        className="fixed top-0 left-0 z-40 w-full h-full bg-black opacity-50"
+      />
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="bg-white rounded-lg shadow-xl p-6 w-96">
+          <div className="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-red-100 rounded-full">
+            <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-semibold text-center text-gray-900 mb-2">
+            Xác nhận xóa
+          </h3>
+          <p className="text-center text-gray-600 mb-6">
+            Bạn có chắc chắn muốn xóa danh mục "<span className="font-semibold">{categoryName}</span>" không?
+          </p>
+          <div className="flex space-x-3">
+            <button
+              onClick={onClose}
+              className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 font-medium"
+            >
+              Hủy
+            </button>
+            <button
+              onClick={onConfirm}
+              className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium"
+            >
+              Xóa
+            </button>
+          </div>
+        </div>
+      </div>
+    </Fragment>
+  );
+};
+
+const AllCategory = () => {
   const { data, dispatch } = useContext(CategoryContext);
   const { categories, loading } = data;
+
+  const [deleteDialog, setDeleteDialog] = useState({
+    isOpen: false,
+    categoryId: null,
+    categoryName: "",
+  });
 
   useEffect(() => {
     fetchData();
@@ -28,26 +77,39 @@ const AllCategory = (props) => {
     }, 1000);
   };
 
-  const deleteCategoryReq = async (cId) => {
-    let deleteC = await deleteCategory(cId);
+  const openDeleteDialog = (cId, cName) => {
+    setDeleteDialog({
+      isOpen: true,
+      categoryId: cId,
+      categoryName: cName,
+    });
+  };
+
+  const closeDeleteDialog = () => {
+    setDeleteDialog({
+      isOpen: false,
+      categoryId: null,
+      categoryName: "",
+    });
+  };
+
+  const confirmDelete = async () => {
+    let deleteC = await deleteCategory(deleteDialog.categoryId);
     if (deleteC.error) {
       console.log(deleteC.error);
     } else if (deleteC.success) {
       console.log(deleteC.success);
       fetchData();
     }
+    closeDeleteDialog();
   };
 
   /* This method call the editmodal & dispatch category context */
-  const editCategory = (cId, type, des, status) => {
-    if (type) {
-      dispatch({
-        type: "editCategoryModalOpen",
-        cId: cId,
-        des: des,
-        status: status,
-      });
-    }
+  const editCategory = (category) => {
+    dispatch({
+      type: "editCategoryModalOpen",
+      category: category,
+    });
   };
 
   if (loading) {
@@ -92,10 +154,8 @@ const AllCategory = (props) => {
                 return (
                   <CategoryTable
                     category={item}
-                    editCat={(cId, type, des, status) =>
-                      editCategory(cId, type, des, status)
-                    }
-                    deleteCat={(cId) => deleteCategoryReq(cId)}
+                    editCat={(category) => editCategory(category)}
+                    deleteCat={(cId, cName) => openDeleteDialog(cId, cName)}
                     key={key}
                   />
                 );
@@ -116,6 +176,12 @@ const AllCategory = (props) => {
           Total {categories && categories.length} category found
         </div>
       </div>
+      <DeleteConfirmDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={closeDeleteDialog}
+        onConfirm={confirmDelete}
+        categoryName={deleteDialog.categoryName}
+      />
     </Fragment>
   );
 };
@@ -138,7 +204,7 @@ const CategoryTable = ({ category, deleteCat, editCat }) => {
         <td className="p-2 text-center">
           <img
             className="w-12 h-12 object-cover object-center"
-            src={`${apiURL}/uploads/categories/${category.cImage}`}
+            src={category.cImage.startsWith("http") ? category.cImage : `${apiURL}/uploads/categories/${category.cImage}`}
             alt=""
           />
         </td>
@@ -161,14 +227,7 @@ const CategoryTable = ({ category, deleteCat, editCat }) => {
         </td>
         <td className="p-2 flex items-center justify-center">
           <span
-            onClick={(e) =>
-              editCat(
-                category._id,
-                true,
-                category.cDescription,
-                category.cStatus
-              )
-            }
+            onClick={() => editCat(category)}
             className="cursor-pointer hover:bg-gray-200 rounded-lg p-2 mx-1"
           >
             <svg
@@ -186,7 +245,7 @@ const CategoryTable = ({ category, deleteCat, editCat }) => {
             </svg>
           </span>
           <span
-            onClick={(e) => deleteCat(category._id)}
+            onClick={() => deleteCat(category._id, category.cName)}
             className="cursor-pointer hover:bg-gray-200 rounded-lg p-2 mx-1"
           >
             <svg

@@ -142,9 +142,11 @@ const CategoryTable = ({ order, editOrder }) => {
         <td className="hover:bg-gray-200 p-2 text-center">
           {order.transactionId}
         </td>
-        <td className="hover:bg-gray-200 p-2 text-center">{order.user.name}</td>
         <td className="hover:bg-gray-200 p-2 text-center">
-          {order.user.email}
+          {order.user ? order.user.name : "N/A"}
+        </td>
+        <td className="hover:bg-gray-200 p-2 text-center">
+          {order.user ? order.user.email : "N/A"}
         </td>
         <td className="hover:bg-gray-200 p-2 text-center">{order.phone}</td>
         <td className="hover:bg-gray-200 p-2 text-center">{order.address}</td>

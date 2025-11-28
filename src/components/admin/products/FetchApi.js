@@ -1,6 +1,23 @@
 import axios from "axios";
 const apiURL = process.env.REACT_APP_API_URL;
 
+// Upload nhiều ảnh lên Cloudinary
+export const uploadImages = async (files, folder = "products") => {
+  let formData = new FormData();
+  for (const file of files) {
+    formData.append("images", file);
+  }
+  formData.append("folder", folder);
+
+  try {
+    let res = await axios.post(`${apiURL}/api/upload/multiple`, formData);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return { error: "Upload failed" };
+  }
+};
+
 export const getAllProduct = async () => {
   try {
     let res = await axios.get(`${apiURL}/api/product/all-product`);
@@ -10,41 +27,27 @@ export const getAllProduct = async () => {
   }
 };
 
-export const createPorductImage = async ({ pImage }) => {
-  /* Most important part for uploading multiple image  */
-  let formData = new FormData();
-  for (const file of pImage) {
-    formData.append("pImage", file);
-  }
-  /* Most important part for uploading multiple image  */
-};
-
 export const createProduct = async ({
   pName,
   pDescription,
-  pImage,
+  pImages,
   pStatus,
   pCategory,
   pQuantity,
   pPrice,
   pOffer,
 }) => {
-  /* Most important part for uploading multiple image  */
-  let formData = new FormData();
-  for (const file of pImage) {
-    formData.append("pImage", file);
-  }
-  /* Most important part for uploading multiple image  */
-  formData.append("pName", pName);
-  formData.append("pDescription", pDescription);
-  formData.append("pStatus", pStatus);
-  formData.append("pCategory", pCategory);
-  formData.append("pQuantity", pQuantity);
-  formData.append("pPrice", pPrice);
-  formData.append("pOffer", pOffer);
-
   try {
-    let res = await axios.post(`${apiURL}/api/product/add-product`, formData);
+    let res = await axios.post(`${apiURL}/api/product/add-product`, {
+      pName,
+      pDescription,
+      pImages,
+      pStatus,
+      pCategory,
+      pQuantity,
+      pPrice,
+      pOffer,
+    });
     return res.data;
   } catch (error) {
     console.log(error);
@@ -52,36 +55,28 @@ export const createProduct = async ({
 };
 
 export const editProduct = async (product) => {
-  console.log(product);
-  /* Most important part for updating multiple image  */
-  let formData = new FormData();
-  if (product.pEditImages) {
-    for (const file of product.pEditImages) {
-      formData.append("pEditImages", file);
-    }
-  }
-  /* Most important part for updating multiple image  */
-  formData.append("pId", product.pId);
-  formData.append("pName", product.pName);
-  formData.append("pDescription", product.pDescription);
-  formData.append("pStatus", product.pStatus);
-  formData.append("pCategory", product.pCategory._id);
-  formData.append("pQuantity", product.pQuantity);
-  formData.append("pPrice", product.pPrice);
-  formData.append("pOffer", product.pOffer);
-  formData.append("pImages", product.pImages);
-
   try {
-    let res = await axios.post(`${apiURL}/api/product/edit-product`, formData);
+    let res = await axios.post(`${apiURL}/api/product/edit-product`, {
+      pId: product.pId,
+      pName: product.pName,
+      pDescription: product.pDescription,
+      pStatus: product.pStatus,
+      pCategory: product.pCategory._id || product.pCategory,
+      pQuantity: product.pQuantity,
+      pPrice: product.pPrice,
+      pOffer: product.pOffer,
+      pImages: product.pImages,
+      pImagesPublicIds: product.pImagesPublicIds,
+    });
     return res.data;
   } catch (error) {
     console.log(error);
   }
 };
 
-export const deleteProduct = async (pId) => {
+export const deleteProduct = async (pId, pImagesPublicIds = []) => {
   try {
-    let res = await axios.post(`${apiURL}/api/product/delete-product`, { pId });
+    let res = await axios.post(`${apiURL}/api/product/delete-product`, { pId, pImagesPublicIds });
     return res.data;
   } catch (error) {
     console.log(error);

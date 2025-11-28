@@ -1,6 +1,6 @@
 import React, { Fragment, useContext, useState, useEffect } from "react";
 import { ProductContext } from "./index";
-import { createProduct, getAllProduct } from "./FetchApi";
+import { createProduct, getAllProduct, uploadImages } from "./FetchApi";
 import { getAllCategory } from "../categories/FetchApi";
 
 const AddProductDetail = ({ categories }) => {
@@ -14,7 +14,7 @@ const AddProductDetail = ({ categories }) => {
     pName: "",
     pDescription: "",
     pStatus: "Active",
-    pImage: null, // Initial value will be null or empty array
+    pImageFiles: null,
     pCategory: "",
     pPrice: "",
     pOffer: 0,
@@ -22,6 +22,8 @@ const AddProductDetail = ({ categories }) => {
     success: false,
     error: false,
   });
+
+  const [uploading, setUploading] = useState(false);
 
   const fetchData = async () => {
     let responseData = await getAllProduct();
@@ -37,20 +39,63 @@ const AddProductDetail = ({ categories }) => {
 
   const submitForm = async (e) => {
     e.preventDefault();
-    e.target.reset();
 
-    if (!fData.pImage) {
+    if (!fData.pImageFiles || fData.pImageFiles.length === 0) {
       setFdata({ ...fData, error: "Please upload at least 1 image" });
       setTimeout(() => {
         setFdata({ ...fData, error: false });
       }, 2000);
+      return;
+    }
+
+    if (fData.pImageFiles.length > 10) {
+      setFdata({ ...fData, error: "Maximum 10 images allowed" });
+      setTimeout(() => {
+        setFdata({ ...fData, error: false });
+      }, 2000);
+      return;
     }
 
     try {
-      let responseData = await createProduct(fData);
+      // Upload ảnh lên Cloudinary trước
+      setUploading(true);
+      const uploadRes = await uploadImages(fData.pImageFiles, "products");
+      setUploading(false);
+
+      if (uploadRes.error) {
+        return setFdata({ ...fData, error: uploadRes.error });
+      }
+
+      // Lấy array URL từ kết quả upload
+      const pImages = uploadRes.images.map((img) => img.url);
+
+      // Tạo product với URLs từ Cloudinary
+      let responseData = await createProduct({
+        pName: fData.pName,
+        pDescription: fData.pDescription,
+        pStatus: fData.pStatus,
+        pCategory: fData.pCategory,
+        pQuantity: fData.pQuantity,
+        pPrice: fData.pPrice,
+        pOffer: fData.pOffer,
+        pImages,
+      });
+
       if (responseData.success) {
         fetchData();
-        setFdata({ ...fData, success: responseData.success });
+        setFdata({
+          pName: "",
+          pDescription: "",
+          pStatus: "Active",
+          pImageFiles: null,
+          pCategory: "",
+          pPrice: "",
+          pOffer: 0,
+          pQuantity: "",
+          success: responseData.success,
+          error: false,
+        });
+        e.target.reset();
       } else if (responseData.error) {
         setFdata({ ...fData, success: false, error: responseData.error });
         setTimeout(() => {
@@ -59,6 +104,7 @@ const AddProductDetail = ({ categories }) => {
       }
     } catch (error) {
       console.log(error);
+      setUploading(false);
     }
   };
 
@@ -168,14 +214,14 @@ const AddProductDetail = ({ categories }) => {
             {/* Most Important part for uploading multiple image */}
             <div className="flex flex-col mt-4">
               <label htmlFor="image">Product Images *</label>
-              <span className="text-gray-600 text-xs">Must need 1 images</span>
+              <span className="text-gray-600 text-xs">Upload 1-10 images</span>
               <input
                 onChange={(e) =>
                   setFdata({
                     ...fData,
                     error: false,
                     success: false,
-                    pImage: [...e.target.files],
+                    pImageFiles: [...e.target.files],
                   })
                 }
                 type="file"
@@ -184,6 +230,7 @@ const AddProductDetail = ({ categories }) => {
                 id="image"
                 multiple
               />
+              {uploading && <span className="text-blue-500 text-sm">Uploading images...</span>}
             </div>
             {/* Most Important part for uploading multiple image */}
             <div className="flex space-x-1 py-4">

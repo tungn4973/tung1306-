@@ -13,6 +13,21 @@ const Headers = () => {
   };
 };
 
+// Upload ảnh lên Cloudinary
+export const uploadImage = async (file, folder = "categories") => {
+  let formData = new FormData();
+  formData.append("image", file);
+  formData.append("folder", folder);
+
+  try {
+    let res = await axios.post(`${apiURL}/api/upload/single`, formData);
+    return res.data;
+  } catch (error) {
+    console.log(error);
+    return { error: "Upload failed" };
+  }
+};
+
 export const getAllCategory = async () => {
   try {
     let res = await axios.get(`${apiURL}/api/category/all-category`, Headers());
@@ -28,16 +43,10 @@ export const createCategory = async ({
   cDescription,
   cStatus,
 }) => {
-  let formData = new FormData();
-  formData.append("cImage", cImage);
-  formData.append("cName", cName);
-  formData.append("cDescription", cDescription);
-  formData.append("cStatus", cStatus);
-
   try {
     let res = await axios.post(
       `${apiURL}/api/category/add-category`,
-      formData,
+      { cName, cImage, cDescription, cStatus },
       Headers()
     );
     return res.data;
@@ -46,12 +55,11 @@ export const createCategory = async ({
   }
 };
 
-export const editCategory = async (cId, des, status) => {
-  let data = { cId: cId, cDescription: des, cStatus: status };
+export const editCategory = async ({ cId, cName, cDescription, cStatus, cImage, cImageOldPublicId }) => {
   try {
     let res = await axios.post(
       `${apiURL}/api/category/edit-category`,
-      data,
+      { cId, cName, cDescription, cStatus, cImage, cImageOldPublicId },
       Headers()
     );
     return res.data;

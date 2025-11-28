@@ -1,6 +1,6 @@
 import React, { Fragment, useContext, useState } from "react";
 import { CategoryContext } from "./index";
-import { createCategory, getAllCategory } from "./FetchApi";
+import { createCategory, getAllCategory, uploadImage } from "./FetchApi";
 
 const AddCategoryModal = (props) => {
   const { data, dispatch } = useContext(CategoryContext);
@@ -13,10 +13,13 @@ const AddCategoryModal = (props) => {
     cName: "",
     cDescription: "",
     cImage: "",
+    cImageFile: null,
     cStatus: "Active",
     success: false,
     error: false,
   });
+
+  const [uploading, setUploading] = useState(false);
 
   const fetchData = async () => {
     let responseData = await getAllCategory();
@@ -35,31 +38,55 @@ const AddCategoryModal = (props) => {
   }
 
   const submitForm = async (e) => {
-    dispatch({ type: "loading", payload: true });
-    // Reset and prevent the form
     e.preventDefault();
-    e.target.reset();
+    dispatch({ type: "loading", payload: true });
 
-    if (!fData.cImage) {
+    if (!fData.cImageFile) {
       dispatch({ type: "loading", payload: false });
       return setFdata({ ...fData, error: "Please upload a category image" });
     }
 
     try {
-      let responseData = await createCategory(fData);
+      // Upload ảnh lên Cloudinary trước
+      setUploading(true);
+      const uploadRes = await uploadImage(fData.cImageFile, "categories");
+      setUploading(false);
+
+      if (uploadRes.error) {
+        dispatch({ type: "loading", payload: false });
+        return setFdata({ ...fData, error: uploadRes.error });
+      }
+
+      // Tạo category với URL từ Cloudinary
+      let responseData = await createCategory({
+        cName: fData.cName,
+        cDescription: fData.cDescription,
+        cStatus: fData.cStatus,
+        cImage: uploadRes.url,
+      });
+
       if (responseData.success) {
         fetchData();
-        setFdata({ ...fData, success: responseData.success });
+        setFdata({
+          cName: "",
+          cDescription: "",
+          cImage: "",
+          cImageFile: null,
+          cStatus: "Active",
+          success: responseData.success,
+          error: false,
+        });
+        e.target.reset();
         dispatch({ type: "loading", payload: false });
+        // Đóng modal sau khi tạo thành công
+        dispatch({ type: "addCategoryModal", payload: false });
       } else if (responseData.error) {
         setFdata({ ...fData, success: false, error: responseData.error });
         dispatch({ type: "loading", payload: false });
-        setTimeout(() => {
-          return setFdata({ ...fData, error: false, success: false });
-        }, 2000);
       }
     } catch (error) {
       console.log(error);
+      dispatch({ type: "loading", payload: false });
     }
   };
 
@@ -157,12 +184,13 @@ const AddCategoryModal = (props) => {
                     ...fData,
                     success: false,
                     error: false,
-                    cImage: e.target.files[0],
+                    cImageFile: e.target.files[0],
                   });
                 }}
                 className="px-4 py-2 border focus:outline-none"
                 type="file"
               />
+              {uploading && <span className="text-blue-500 text-sm">Uploading...</span>}
             </div>
             <div className="flex flex-col space-y-1 w-full">
               <label htmlFor="status">Category Status</label>
