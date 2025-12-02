@@ -62,40 +62,38 @@ const SingleProduct = (props) => {
         products.map((item, index) => {
           return (
             <Fragment key={index}>
-              <div className="relative col-span-1 m-2">
+              <div className="relative col-span-1 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
                 <img
                   onClick={(e) => history.push(`/products/${item._id}`)}
-                  className="w-full object-cover object-center cursor-pointer"
-                  src={`${apiURL}/uploads/products/${item.pImages[0]}`}
+                  className="w-full h-48 md:h-56 lg:h-64 object-cover object-center cursor-pointer"
+                  src={item.pImages[0]}
                   alt=""
                 />
-                <div className="flex items-center justify-between mt-2">
-                  <div className="text-gray-600 font-light truncate">
-                    {item.pName}
+                <div className="p-3">
+                  <div className="flex items-center justify-between">
+                    <div className="text-gray-700 font-medium truncate">
+                      {item.pName}
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <span>
+                        <svg
+                          className="w-4 h-4 fill-current text-yellow-500"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+                          />
+                        </svg>
+                      </span>
+                      <span className="text-gray-600 text-sm">
+                        {item.pRatingsReviews.length}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex items-center space-x-1">
-                    <span>
-                      <svg
-                        className="w-4 h-4 fill-current text-yellow-700"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
-                        />
-                      </svg>
-                    </span>
-                    <span className="text-gray-700">
-                      {item.pRatingsReviews.length}
-                    </span>
-                  </div>
+                  <div className="text-red-500 font-bold mt-1">${item.pPrice}.00</div>
                 </div>
-                <div>${item.pPrice}.00</div>
                 {/* WhisList Logic  */}
                 <div className="absolute top-0 right-0 mx-2 my-2 md:mx-4">
                   <svg

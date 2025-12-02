@@ -43,7 +43,7 @@ const CategoryList = () => {
               }}
             >
               <img
-                src={`${apiURL}/uploads/categories/${item.cImage}`}
+                src={item.cImage && item.cImage.startsWith('http') ? item.cImage : `${apiURL}/uploads/categories/${item.cImage}`}
                 alt={item.cName}
                 className="w-20 h-20 object-cover rounded-full hover:scale-105 transition-transform duration-300"
                 style={{
