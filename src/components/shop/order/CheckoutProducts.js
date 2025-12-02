@@ -48,10 +48,10 @@ export const CheckoutComponent = (props) => {
   }
   return (
     <Fragment>
-      <section className="mx-4 mt-20 md:mx-12 md:mt-32 lg:mt-24">
-        <div className="text-2xl mx-2">Đơn hàng</div>
+      <section className="container mx-auto px-4 mt-20 md:mt-32 lg:mt-24">
+        <div className="text-2xl mb-4">Đơn hàng</div>
         {/* Product List */}
-        <div className="flex flex-col md:flex md:space-x-2 md:flex-row">
+        <div className="flex flex-col md:flex md:space-x-6 md:flex-row">
           <div className="md:w-1/2">
             <CheckoutProducts products={data.cartProduct} />
           </div>
@@ -137,24 +137,23 @@ const CheckoutProducts = ({ products }) => {
                 key={index}
                 className="col-span-1 m-2 md:py-6 md:border-t md:border-b md:my-2 md:mx-0 md:flex md:items-center md:justify-between"
               >
-                <div className="md:flex md:items-center md:space-x-4">
+                <div className="flex items-center space-x-4">
                   <img
                     onClick={(e) => history.push(`/products/${product._id}`)}
-                    className="cursor-pointer md:h-20 md:w-20 object-cover object-center"
-                    src={`${apiURL}/uploads/products/${product.pImages[0]}`}
+                    className="cursor-pointer w-16 h-16 object-cover object-center rounded"
+                    src={product.pImages[0]}
                     alt="wishListproduct"
                   />
-                  <div className="text-lg md:ml-6 truncate">
-                    {product.pName}
-                  </div>
-                  <div className="md:ml-6 font-semibold text-gray-600 text-sm">
-                    Price : ${product.pPrice}.00{" "}
-                  </div>
-                  <div className="md:ml-6 font-semibold text-gray-600 text-sm">
-                    Quantitiy : {quantity(product._id)}
-                  </div>
-                  <div className="font-semibold text-gray-600 text-sm">
-                    Subtotal : ${subTotal(product._id, product.pPrice)}.00
+                  <div className="flex-1">
+                    <div className="text-base font-medium truncate">
+                      {product.pName}
+                    </div>
+                    <div className="text-gray-600 text-sm">
+                      ${product.pPrice}.00 x {quantity(product._id)}
+                    </div>
+                    <div className="font-semibold text-gray-800 text-sm">
+                      Subtotal: ${subTotal(product._id, product.pPrice)}.00
+                    </div>
                   </div>
                 </div>
               </div>

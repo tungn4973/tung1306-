@@ -103,35 +103,28 @@ const ProductDetailsSection = (props) => {
           category: sProduct.pCategory.cName,
         }}
       />
-      <section className="m-4 md:mx-12 md:my-6">
-        <div className="grid grid-cols-2 md:grid-cols-12">
-          <div className="hidden md:block md:col-span-1 md:flex md:flex-col md:space-y-4 md:mr-2">
-            <img
-              onClick={(e) =>
-                slideImage("increase", 0, count, setCount, pImages)
-              }
-              className={`${
-                count === 0 ? "" : "opacity-25"
-              } cursor-pointer w-20 h-20 object-cover object-center`}
-              src={`${apiURL}/uploads/products/${sProduct.pImages[0]}`}
-              alt="pic"
-            />
-            <img
-              onClick={(e) =>
-                slideImage("increase", 1, count, setCount, pImages)
-              }
-              className={`${
-                count === 1 ? "" : "opacity-25"
-              } cursor-pointer w-20 h-20 object-cover object-center`}
-              src={`${apiURL}/uploads/products/${sProduct.pImages[1]}`}
-              alt="pic"
-            />
+      <section className="container mx-auto px-4 my-6">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+          <div className="hidden md:flex md:col-span-1 md:flex-col md:space-y-2">
+            {sProduct.pImages && sProduct.pImages.slice(0, 4).map((img, index) => (
+              <img
+                key={index}
+                onClick={(e) =>
+                  slideImage("increase", index, count, setCount, pImages)
+                }
+                className={`${
+                  count === index ? "border-2 border-yellow-500" : "opacity-50"
+                } cursor-pointer w-16 h-16 object-cover object-center rounded`}
+                src={img}
+                alt={`pic-${index}`}
+              />
+            ))}
           </div>
-          <div className="col-span-2 md:col-span-7">
+          <div className="col-span-1 md:col-span-6">
             <div className="relative">
               <img
-                className="w-full"
-                src={`${apiURL}/uploads/products/${sProduct.pImages[count]}`}
+                className="w-full max-h-96 object-contain rounded-lg"
+                src={sProduct.pImages[count]}
                 alt="Pic"
               />
               <div className="absolute inset-0 flex justify-between items-center mb-4">
@@ -172,7 +165,7 @@ const ProductDetailsSection = (props) => {
               </div>
             </div>
           </div>
-          <div className="col-span-2 mt-8 md:mt-0 md:col-span-4 md:ml-6 lg:ml-12">
+          <div className="col-span-1 mt-8 md:mt-0 md:col-span-5 md:pl-6">
             <div className="flex flex-col leading-8">
               <div className="text-2xl tracking-wider">{sProduct.pName}</div>
               <div className="flex justify-between items-center">

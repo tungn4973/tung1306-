@@ -12,6 +12,7 @@ import ProductByCategory from "./home/ProductByCategory";
 import CheckoutPage from "./order/CheckoutPage";
 import BlogIndex from "./blog/index";
 import ContactIndex from "./contact/index";
+import Shop from "./shop";
 
 export {
   Home,
@@ -30,4 +31,5 @@ export {
   CheckoutPage,
   BlogIndex,
   ContactIndex,
+  Shop,
 };

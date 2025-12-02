@@ -15,6 +15,15 @@ export const fetchData = async (cartListProduct, dispatch) => {
   }
 };
 
+// Validate số điện thoại Việt Nam
+const validatePhone = (phone) => {
+  // Loại bỏ khoảng trắng và dấu gạch ngang
+  const cleanPhone = phone.replace(/[\s-]/g, "");
+  // Regex cho số điện thoại VN: 10 số, bắt đầu bằng 0
+  const vnPhoneRegex = /^(0[3|5|7|8|9])+([0-9]{8})$/;
+  return vnPhoneRegex.test(cleanPhone);
+};
+
 export const pay = async (
   data,
   dispatch,
@@ -27,6 +36,8 @@ export const pay = async (
     setState({ ...state, error: "Vui lòng nhập địa chỉ giao hàng" });
   } else if (!state.phone) {
     setState({ ...state, error: "Vui lòng nhập số điện thoại" });
+  } else if (!validatePhone(state.phone)) {
+    setState({ ...state, error: "Số điện thoại không hợp lệ (VD: 0912345678)" });
   } else {
     dispatch({ type: "loading", payload: true });
     let orderData = {
