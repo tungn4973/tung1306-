@@ -86,8 +86,8 @@ const ShopComponent = () => {
 
   return (
     <Fragment>
-      <div className="container mx-auto px-4 py-6">
-        <h1 className="text-2xl font-semibold mb-6">Tất cả sản phẩm</h1>
+      <div className="container mx-auto px-4 py-6 pt-20">
+        <h1 className="text-2xl font-semibold mb-6 pt-20">Tất cả sản phẩm</h1>
 
         {/* Filter & Sort */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
