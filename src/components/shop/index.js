@@ -5,8 +5,7 @@ import { LayoutContext } from "./layout";
 import { layoutState, layoutReducer } from "./layout/layoutContext";
 import { isAdmin, isAuthenticate } from "./auth/fetchApi";
 import PageNotFound from "./layout/PageNotFound";
-import ProductDetails from "./productDetails";
-import ProductByCategory from "./home/ProductByCategory";
+// ProductByCategory component removed; route will use Shop instead
 import Shop from "./shop";
 import AllDoctors from "./doctors/AllDoctors";
 import DoctorDetails from "./doctors/DoctorDetails";
@@ -24,8 +23,6 @@ export {
   isAdmin,
   isAuthenticate,
   PageNotFound,
-  ProductDetails,
-  ProductByCategory,
   Shop,
   AllDoctors,
   DoctorDetails,

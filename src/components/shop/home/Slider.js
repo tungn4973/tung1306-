@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useContext, useState } from "react";
-import OrderSuccessMessage from "./OrderSuccessMessage";
+// OrderSuccessMessage removed
 import { HomeContext } from "./";
 import { prevSlide, nextSlide } from "./Mixins";
 
@@ -88,7 +88,7 @@ const Slider = (props) => {
           </>
         ) : null}
       </div>
-      <OrderSuccessMessage />
+      {/* OrderSuccessMessage removed */}
     </Fragment>
   );
 };

@@ -4,8 +4,6 @@ import {
   ProtectedRoute,
   AdminProtectedRoute,
   PageNotFound,
-  ProductDetails,
-  ProductByCategory,
   Shop,
   AllDoctors,
   DoctorDetails,
@@ -66,11 +64,10 @@ const Routes = () => {
         />
         <Route exact path="/doctors" component={AllDoctors} />
         <Route exact path="/doctors/:id" component={DoctorDetails} />
-        <Route exact path="/products/:id" component={ProductDetails} />
         <Route
           exact
           path="/products/category/:catId"
-          component={ProductByCategory}
+          component={Shop}
         />
         <Route exact path="/verify-email/:token" component={VerifyEmail} />
         {/* Shop & Public Routes End */}
@@ -83,11 +80,7 @@ const Routes = () => {
           path="/user/profile"
           component={UserProfile}
         />
-        <ProtectedRoute
-          exact={true}
-          path="/user/orders"
-          component={UserOrders}
-        />
+            {/* Orders route removed (UserOrders deleted) */}
         <ProtectedRoute
           exact={true}
           path="/user/setting"
