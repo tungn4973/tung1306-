@@ -1,0 +1,198 @@
+# =========================================================
+# Python
+# =========================================================
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Python cache / compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Python packaging
+*.egg
+*.egg-info/
+dist/
+build/
+develop-eggs/
+.eggs/
+pip-wheel-metadata/
+share/python-wheels/
+
+# pytest
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+
+# Ruff
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Pylint
+.pylint.d/
+
+# =========================================================
+# Environment / Secrets
+# =========================================================
+
+.env
+.env.*
+!.env.example
+!.env.template
+
+# Local config
+*.local
+
+# =========================================================
+# Node / React
+# =========================================================
+
+node_modules/
+
+# React / Vite / frontend build
+dist/
+build/
+.vite/
+
+# npm
+.npm/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Package manager cache
+.yarn/
+.pnp/
+.pnp.js
+
+# =========================================================
+# React / TypeScript
+# =========================================================
+
+*.tsbuildinfo
+
+# =========================================================
+# IDE / Editor
+# =========================================================
+
+.vscode/
+.idea/
+
+# VS Code local history
+.history/
+
+# JetBrains
+*.iml
+
+# =========================================================
+# OS generated files
+# =========================================================
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+
+# =========================================================
+# Logs
+# =========================================================
+
+*.log
+logs/
+log/
+
+# =========================================================
+# Temporary files
+# =========================================================
+
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*.pid
+
+tmp/
+temp/
+
+# =========================================================
+# Coverage / Test output
+# =========================================================
+
+coverage/
+.nyc_output/
+
+# =========================================================
+# Build / generated files
+# =========================================================
+
+.cache/
+.parcel-cache/
+.turbo/
+
+# =========================================================
+# Local databases
+# =========================================================
+
+*.sqlite
+*.sqlite3
+*.db
+
+# =========================================================
+# Uploaded / generated files
+# =========================================================
+
+uploads/
+output/
+outputs/
+generated/
+generated_files/
+
+# =========================================================
+# Python local tooling
+# =========================================================
+
+.python-version
+
+# =========================================================
+# Secrets / certificates
+# =========================================================
+
+*.pem
+*.key
+*.p12
+*.pfx
+
+# =========================================================
+# Docker local overrides
+# =========================================================
+
+docker-compose.override.yml
